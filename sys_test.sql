@@ -7,6 +7,8 @@ create user kh2 identified by kh1234;
 
 grant connect, resource to kh, kh2;
 
+grant create view to kh, kh2, scott;
+
 -- 외우기
 -- create user 유저명 identified by 비밀번호;
 -- grant 권한명, 롤명, ... to 유저명, 유저명2, 롤명
