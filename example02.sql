@@ -78,8 +78,10 @@ select emp_name, to_char(salary,'L999,999,999') from employee;
 -- 나이는 주민번호에서 출력해서 날짜데이터로 변환한 다음 계산
 select sysdate from dual;
 select emp_name, dept_code, substr(emp_no,1,2) ||'년' || substr(emp_no,3,1)||'월'||substr(emp_no,5,1)||'일' as 생년월일, 
-trunc(months_between (sysdate, to_date(substr(emp_no,1,6), 'rrmmdd')) /12) as 만나이 from employee where emp_id not in(200,201,214);
-
+trunc(months_between (sysdate, to_date(substr(emp_no,1,6), 'rrmmdd')) /12) as 만나이 from employee where emp_id not in(200,201,214,999);
+SELECT * FROM EMPLOYEE;
+DELETE EMPLOYEE WHERE EMP_NAME='홍길똥';
+commit;
 -- 22. EMPLOYEE 테이블에서 부서코드가 D5, D6, D9인 사원만 조회하되
 -- D5면 총무부, D6면 기획부, D9면 영업부로 처리(단, 부서코드 오름차순으로 정렬)
 select emp_id, emp_name, dept_code, 
