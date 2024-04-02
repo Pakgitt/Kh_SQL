@@ -248,9 +248,86 @@ where department_name in ('환경조경학과') and class_type in ('전공선택
 group by class_no, class_name;
 
 -- 17. 최경희 학생과 같은 과 학생들의 이름과 주소를 출력해라
-select studednt_name, student_adress from tb_student
+select student_name, student_address from tb_student
 join tb_department using(department_no)
-where department_name in
-(select department_name from tb_department where 
+where department_no in 
+(select department_no from tb_student where student_name like'최경희');
+
+select count(*) from tb_student where department_no = 038;
+
+-- 18. 국어국문학과에서 총 평점이 가장 높은 학생의 이름과 학번을 표시해라
+select student_no, student_name from tb_student
+join tb_department using(department_no)
+join tb_grade using(student_no)
+where department_name like '국어국문학과' 
+and point max(avg(point);
+-- 몰라
+
+-- 19. 한경조경학과가 속한 같은 계열의 학과들의 학과 별 전공과목 평점을 파악해라
+-- 단, 평점은 소수점 한자리까지만 반올림
+select d.department_name, round(avg(point),1) from tb_department d
+join tb_class c on d.department_no = c.department_no
+join tb_grade using(class_no)
+where d.category in 
+(select category from tb_department where department_name like '환경조경학과')
+group by d.department_name
+order by 1;
+
+-- DDL
+DROP TABLE TB_CLASS_TYPE;
+-- 01.
+create table tb_category(
+    name varchar2(10),
+    use_yn char(1) default 'Y'
+    );
+
+desc tb_category;
+
+-- 02. 
+create table tb_class_type (
+    no varchar2(5) primary key,
+    name varchar2(10)
+);
+desc tb_class_type;
+
+-- 03. TB_CATEGORY 테이블의 NAME 컬럼에 PRIMARY KEY 생성
+ALTER TABLE TB_CATEGORY
+    ADD CONSTRAINT NAME_PK PRIMARY KEY(NAME);
+    
+-- 04. TB_CLASS_TYPE 테이블의 NAME 컬럼에 NULL값이 들어가지 않도록 변경
+ALTER TABLE TB_CLASS_TYPE
+    MODIFY NAME NOT NULL;
+    
+-- 05. 두 테이블에서 컬럼명이 NO인것은 기존 타입을 유지하되 크기는 10으로,
+-- 컬럼명이 NAME인것은 마찬가지로 타입을 유지하되 크기 20으로 변경
+ALTER TABLE TB_CLASS_TYPE
+    MODIFY NO VARCHAR2(10)
+    MODIFY NAME VARCHAR2(20);
+ALTER TABLE TB_CATEGORY
+    MODIFY NAME VARCHAR2(20);
+    
+-- 06. 두 테이블의 NO 컬럼과 NAME 컬럼의 이름을 각각 TB_를 제외한 테이블 이름앞에 붙인다
+ALTER TABLE TB_CLASS_TYPE
+    RENAME COLUMN NAME TO CLASS_TYPE_NAME;
+ALTER TABLE TB_CATEGORY
+    RENAME COLUMN NAME TO CATEGORY_NAME;
+    
+-- 07. TB_CATEGORY, TB_CLASS_TYPE 테이블의 PRIMARY KEY 이름을 다음과 같이 변경
+-- PK_+컬럼이름
+ALTER TABLE TB_CATEGORY
+    DROP CONSTRAINT NAME_PK;
+ALTER TABLE TB_CATEGORY
+    ADD CONSTRAINT PK_CATEGORY_NAME PRIMARY KEY(CATEGORY_NAME);
+
+ALTER TABLE TB_CLASS_TYPE
+    DROP CONSTRAINT NO PRIMARY KEY,  
+    ADD CONSTRAINT PK_CLASS_TYPE_NO PRIMARY KEY (NO); 
+-- 어케함?
+
+
+
+
+
+
 
 
