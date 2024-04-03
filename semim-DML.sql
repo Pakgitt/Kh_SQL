@@ -1,3 +1,6 @@
+---& 대체입력창이 아니라 문자 그대로 동작하도록 함
+set define off;
+
 --DROP TABLE "LOGIN_LOG";
 --DROP TABLE "BOARD_REPLY";
 --DROP TABLE "REPORT";
@@ -98,7 +101,10 @@ INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD
     3 , 1, 3  );
 
 ---- 5 에 댓글
-UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE BOARD_REPLY_STEP > 
+UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE 
+    BOARD_REPLY_REF = (SELECT BOARD_REPLY_REF FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 5)
+    AND
+    BOARD_REPLY_STEP > 
         ( SELECT BOARD_REPLY_STEP FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 5);
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
     'kh1', '5번ㄷㄷ' , default , null, 
@@ -119,4 +125,46 @@ INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD
 select * from BOARD_REPLY 
  ORDER BY BOARD_REPLY_REF DESC, BOARD_REPLY_STEP ASC
 ;
+DELETE FROM BOARD_REPLY;
 
+create or replace PROCEDURE pro_board_insert (
+    p_writer_key board.board_writer%type, 
+    p_subject_Str board.subject%type,
+    p_maxcount number)
+is 
+    v_b board%rowtype;
+BEGIN
+    for i in 1..p_maxcount loop
+    select seq_board_id.nextval into v_b.board_id from dual;
+    v_b.board_writer := p_writer_key;
+    insert into board
+    values(
+        v_b.board_id,
+        p_subject_str||i,
+        '내용-----'||I,
+        default,
+        '127.0.0.1',
+        v_b.board_writer,
+        default
+        );
+    end loop;
+end;
+/
+exec pro_board_insert('kh1','제목',5);
+
+select * from member;
+select * from board;
+desc board;
+rollback;
+
+delete from board;
+delete from board_reply;
+select * from user_sequences;
+
+alter SEQUENCE seq_board_id
+maxvalue 999999;
+drop SEQUENCE seq_board_id;
+
+desc member;
+desc board_reply;
+desc board;
