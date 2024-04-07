@@ -66,8 +66,24 @@ DESC BOARD_REPLY;
 --BOARD_REPLY_STEP       NOT NULL NUMBER(3) 
 -- BOARD_ID : 5 댓글들... 달기
 -- 
-(SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY);
--- 댓글 1 - 원본글
+---------- TABLE BOARD_REPLY insert
+DESC BOARD_REPLY;
+--BOARD_REPLY_ID         NOT NULL NUMBER         
+--BOARD_ID               NOT NULL NUMBER         
+--BOARD_REPLY_WRITER     NOT NULL VARCHAR2(20)   
+--BOARD_REPLY_CONTENT    NOT NULL VARCHAR2(4000) 
+--BOARD_REPLY_WRITE_TIME NOT NULL TIMESTAMP(6)   
+--BOARD_REPLY_LOG_IP              VARCHAR2(15)   
+--BOARD_REPLY_LEVEL      NOT NULL NUMBER(2)      
+--BOARD_REPLY_REF        NOT NULL NUMBER         
+--BOARD_REPLY_STEP       NOT NULL NUMBER(3) 
+-- BOARD_ID : 5 댓글들... 달기
+-- 
+
+select * from BOARD_REPLY ORDER BY BOARD_REPLY_REF, BOARD_REPLY_STEP;
+
+delete from board_reply where board_reply_id = 6;
+
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
     'kh1', '댓글1' , default , null, 
     1 , (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 1   );
@@ -79,6 +95,10 @@ INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
     'kh1', '댓글3' , default , null, 
     1 , (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 1   );    
+    -- 댓글 - 원본글 
+INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
+    'kh1', '댓글4' , default , null, 
+    1 , (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 1   );    
 
 -- 1댓글 에 - 대댓글
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
@@ -88,7 +108,11 @@ INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
     'kh1', '대대댓글1' , default , null, 
     3 , 1, 3  );
-
+-- 1댓글에 - 대대대댓글
+insert into board_reply values ( (Select nvl(max(board_reply_id),0)+1 from board_reply),5,
+    'kh2', '대대대댓글', default, null,
+    4, 1, 4);
+    
 -- 1댓글 에 - 대댓글
 UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE BOARD_REPLY_STEP > 1;
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
@@ -100,71 +124,218 @@ INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD
     'kh1', '대대댓글2' , default , null, 
     3 , 1, 3  );
 
----- 5 에 댓글
+---- 3 에 댓글
 UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE 
-    BOARD_REPLY_REF = (SELECT BOARD_REPLY_REF FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 5)
-    AND
-    BOARD_REPLY_STEP > 
-        ( SELECT BOARD_REPLY_STEP FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 5);
+    BOARD_REPLY_REF = ( SELECT BOARD_REPLY_REF FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3)
+    AND 
+    BOARD_REPLY_STEP > ( SELECT BOARD_REPLY_STEP FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3);
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
-    'kh1', '5번ㄷㄷ' , default , null, 
-    (SELECT BOARD_REPLY_LEVEL+1 FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 5 )  , 
-    (SELECT BOARD_REPLY_REF     FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 5 )  , 
-    (SELECT BOARD_REPLY_STEP+1  FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 5 )  );
+    'kh1', '3번ㄷㄷe' , default , null, 
+    (SELECT BOARD_REPLY_LEVEL+1 FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  , 
+    (SELECT BOARD_REPLY_REF     FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  , 
+    (SELECT BOARD_REPLY_STEP+1  FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  );
 
-
----- 9 에 댓글
-UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE BOARD_REPLY_STEP > 
-        ( SELECT BOARD_REPLY_STEP FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 9);
+-- 댓글 - 원본글 
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
-    'kh1', '9번ㄷㄷ' , default , null, 
-    (SELECT BOARD_REPLY_LEVEL+1 FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 9 )  , 
-    (SELECT BOARD_REPLY_REF     FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 9 )  , 
-    (SELECT BOARD_REPLY_STEP+1  FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 9 )  );
+    'kh1', '원ㄷ' , default , null, 
+    1 , (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 1   );    
 
-select * from BOARD_REPLY 
- ORDER BY BOARD_REPLY_REF DESC, BOARD_REPLY_STEP ASC
-;
-DELETE FROM BOARD_REPLY;
+---- 3 에 댓글
+UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE 
+    BOARD_REPLY_REF = ( SELECT BOARD_REPLY_REF FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3)
+    AND 
+    BOARD_REPLY_STEP > ( SELECT BOARD_REPLY_STEP FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 ) ;
+INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
+    'kh1', '3번ㄷeㄷㄷ' , default , null, 
+    (SELECT BOARD_REPLY_LEVEL+1 FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  , 
+    (SELECT BOARD_REPLY_REF     FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  , 
+    (SELECT BOARD_REPLY_STEP+1  FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  );
+    
+select * from BOARD_REPLY ORDER BY BOARD_REPLY_REF, CASE WHEN BOARD_REPLY_STEP != 1 THEN BOARD_REPLY_STEP ELSE NULL END DESC;
+select * from BOARD_REPLY ORDER BY BOARD_REPLY_REF, BOARD_REPLY_WRITE_TIME;
+-- 스텝 번호 1 제외하고 내림 차순
+ROLLBACK;
+DELETE from BOARD_REPLY WHERE BOARD_REPLY_ID=5;
+commit;
 
-create or replace PROCEDURE pro_board_insert (
-    p_writer_key board.board_writer%type, 
-    p_subject_Str board.subject%type,
-    p_maxcount number)
-is 
-    v_b board%rowtype;
+set define on;
+
+select * from MEMBER;
+select * from BOARD;
+select * from BOARD_REPLY;
+EXEC PRO_BOARD_INSERT('kh2', '제목----', 10);
+create or replace NONEDITIONABLE PROCEDURE PRO_BOARD_INSERT 
+(  P_WRITER_KEY BOARD.BOARD_WRITER%TYPE,
+P_SUBJECT_STR BOARD.SUBJECT%TYPE,
+P_MAXCOUNT NUMBER )
+IS
+    V_B BOARD%ROWTYPE;
+    V_EXIST_MEMBER NUMBER := 0;
 BEGIN
-    for i in 1..p_maxcount loop
-    select seq_board_id.nextval into v_b.board_id from dual;
-    v_b.board_writer := p_writer_key;
-    insert into board
-    values(
-        v_b.board_id,
-        p_subject_str||i,
-        '내용-----'||I,
-        default,
-        '127.0.0.1',
-        v_b.board_writer,
-        default
-        );
-    end loop;
-end;
+    -- MEMBER 여부 확인
+    SELECT COUNT(*) INTO V_EXIST_MEMBER  FROM MEMBER WHERE MEM_ID=P_WRITER_KEY;
+    IF (V_EXIST_MEMBER < 1 ) THEN
+        DBMS_OUTPUT.PUT_LINE('멤버만 글쓰기 가능합니다.');
+    ELSE
+        FOR I IN 1..P_MAXCOUNT LOOP
+                SELECT SEQ_BOARD_ID.NEXTVAL INTO V_B.BOARD_ID FROM DUAL;
+                --INSERT INTO BOARD VALUES (SEQ_BOARD_ID.nextval, '제목1', '내용1', 
+                --default, '127.0.0.1', 'kh1', default);
+                INSERT INTO BOARD 
+                VALUES
+                    (   V_B.BOARD_ID,
+                        P_SUBJECT_STR||I,
+                        '내용----'||I,
+                        default,
+                        '127.0.0.1',
+                        P_WRITER_KEY,
+                        default
+                    );
+        END LOOP;
+        DBMS_OUTPUT.PUT_LINE('글쓰기 완료');
+    END IF;
+END;
 /
-exec pro_board_insert('kh1','제목',5);
 
-select * from member;
-select * from board;
-desc board;
-rollback;
-
-delete from board;
-delete from board_reply;
-select * from user_sequences;
-
-alter SEQUENCE seq_board_id
-maxvalue 999999;
-drop SEQUENCE seq_board_id;
+EXEC PRO_MEMBER_BOARD_INSERT('K','@AAA.KH.COM', '제목--', 10);
+CREATE OR REPLACE PROCEDURE PRO_MEMBER_BOARD_INSERT 
+(  P_MEMBER_ID_KEY MEMBER.MEM_ID%type
+  ,P_MEMBER_EMAIL_DOMAIN MEMBER.MEM_EMAIL%type
+  ,P_SUBJECT_STR BOARD.SUBJECT%type
+  ,P_MAXCOUNT NUMBER )
+IS
+    V_M MEMBER%ROWTYPE;
+    V_B BOARD%ROWTYPE;
+BEGIN
+    FOR I IN 1..P_MAXCOUNT LOOP
+        V_M.MEM_ID := P_MEMBER_ID_KEY||I;
+        
+        INSERT INTO MEMBER VALUES 
+        (V_M.MEM_ID, 'pwd'||I, P_MEMBER_ID_KEY||I||P_MEMBER_EMAIL_DOMAIN);
+        
+        SELECT SEQ_BOARD_ID.NEXTVAL INTO V_B.BOARD_ID FROM DUAL;
+    
+    --INSERT INTO BOARD VALUES (SEQ_BOARD_ID.nextval, '제목1', '내용1', 
+    --default, '127.0.0.1', 'kh1', default);
+        INSERT INTO BOARD VALUES
+        ( V_B.BOARD_ID, P_SUBJECT_STR||I, '내용----'||I,
+          default, '127.0.0.1', V_M.MEM_ID, default);
+    END LOOP;
+END;
+/
+select * from BOARD_REPLY ORDER BY BOARD_REPLY_REF DESC, BOARD_REPLY_STEP ASC;
+--EXEC PRO_BOARD_INSERT('kh1', '제목----', 10);
+--EXEC PRO_MEMBER_BOARD_INSERT('m','@AAA.KH.COM', '제목--', 10);
+EXEC PRO_BOARD_REPLY_INSERT('kh1','내용~', 3, 0);
+EXEC PRO_BOARD_REPLY_INSERT('kh1','내용~', 3, 1);
+--EXEC PRO_BOARD_REPLY_INSERT('kh1','내용~', 3, 여기BOARD_REPLY_ID번호적기);
+CREATE OR REPLACE PROCEDURE PRO_BOARD_REPLY_INSERT 
+(  P_WRITER_KEY     BOARD_REPLY.BOARD_REPLY_WRITER%TYPE
+  ,P_CONTENT_STR    BOARD_REPLY.BOARD_REPLY_CONTENT%TYPE
+  ,P_RE_BOARD_ID    BOARD_REPLY.BOARD_ID%TYPE
+  ,P_RE_BOARD_REPLY_ID  BOARD_REPLY.BOARD_REPLY_ID%TYPE)
+IS
+    V_M MEMBER%ROWTYPE;
+    V_B BOARD%ROWTYPE;
+    V_EXIST_MEMBER NUMBER := 0;
+    V_EXIST_BOARD_ID NUMBER := 0;
+    V_EXIST_BOARD_REPLY_ID NUMBER := 0;
+    V_LEVEL NUMBER := 0;
+    V_CONTENT BOARD_REPLY.BOARD_REPLY_CONTENT%TYPE;
+BEGIN
+    -- MEMBER 여부 확인
+    SELECT COUNT(*) INTO V_EXIST_MEMBER 
+    FROM MEMBER WHERE MEM_ID=P_WRITER_KEY;
+    -- BOARD_ID 여부 확인
+    SELECT COUNT(*) INTO V_EXIST_BOARD_ID 
+    FROM BOARD WHERE BOARD_ID=P_RE_BOARD_ID;
+    -- BOARD_REPLY_ID 여부 확인
+    SELECT COUNT(*) INTO V_EXIST_BOARD_REPLY_ID 
+    FROM BOARD_REPLY WHERE BOARD_REPLY_ID=P_RE_BOARD_REPLY_ID;
+    
+    IF (V_EXIST_MEMBER < 1 ) THEN
+        DBMS_OUTPUT.PUT_LINE('멤버만 글쓰기 가능합니다.');
+    ELSIF (V_EXIST_BOARD_ID < 1 ) THEN
+        DBMS_OUTPUT.PUT_LINE('존재하지 않는 BOARD ID에 댓글을 작성할 수 없습니다.');
+    ELSIF (V_EXIST_BOARD_REPLY_ID < 1 ) THEN
+        DBMS_OUTPUT.PUT_LINE(P_RE_BOARD_REPLY_ID||'에 댓글을 작성합니다.');
+        
+        V_CONTENT := P_RE_BOARD_ID||'의 ㄷ '||P_CONTENT_STR;
+        
+        --INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
+        --    'kh1', '원ㄷ' , default , null, 
+        --    1 , (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 1   );    
+        INSERT INTO BOARD_REPLY VALUES
+        ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY) , P_RE_BOARD_ID, 
+            P_WRITER_KEY, V_CONTENT , default , null, 
+            DEFAULT , (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), DEFAULT );
+    ELSE
+        -- 댓글내용 T내기
+        SELECT BOARD_REPLY_LEVEL INTO V_LEVEL FROM BOARD_REPLY WHERE BOARD_REPLY_ID = P_RE_BOARD_REPLY_ID;
+        FOR I IN 1..V_LEVEL LOOP
+            V_CONTENT := V_CONTENT||'*';
+        END LOOP;
+        V_CONTENT := V_CONTENT||P_RE_BOARD_REPLY_ID||'ㄷ '||P_CONTENT_STR;
+        
+        --UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE 
+        --    BOARD_REPLY_REF = ( SELECT BOARD_REPLY_REF FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3)
+        --    AND 
+        --    BOARD_REPLY_STEP > ( SELECT BOARD_REPLY_STEP FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 ) ;
+        --INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
+        --    'kh1', '3번ㄷe' , default , null, 
+        --    (SELECT BOARD_REPLY_LEVEL+1 FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  , 
+        --    (SELECT BOARD_REPLY_REF     FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  , 
+        --    (SELECT BOARD_REPLY_STEP+1  FROM BOARD_REPLY WHERE BOARD_REPLY_ID = 3 )  );
+        UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE 
+            BOARD_REPLY_REF = ( SELECT BOARD_REPLY_REF FROM BOARD_REPLY WHERE BOARD_REPLY_ID = P_RE_BOARD_REPLY_ID)
+            AND 
+            BOARD_REPLY_STEP > ( SELECT BOARD_REPLY_STEP FROM BOARD_REPLY WHERE BOARD_REPLY_ID = P_RE_BOARD_REPLY_ID ) ;
+        INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), P_RE_BOARD_ID,
+            P_WRITER_KEY, V_CONTENT , default , null, 
+            (SELECT BOARD_REPLY_LEVEL+1 FROM BOARD_REPLY WHERE BOARD_REPLY_ID = P_RE_BOARD_REPLY_ID )  , 
+            (SELECT BOARD_REPLY_REF     FROM BOARD_REPLY WHERE BOARD_REPLY_ID = P_RE_BOARD_REPLY_ID )  , 
+            (SELECT BOARD_REPLY_STEP+1  FROM BOARD_REPLY WHERE BOARD_REPLY_ID = P_RE_BOARD_REPLY_ID )  );
+    END IF;
+    
+END;
+/
 
 desc member;
 desc board_reply;
 desc board;
+
+select * from BOARD_REPLY order by board_id;
+
+variable vtablename varchar2;
+exec pro_create_table('EJ', :vtablename);
+PRINT vtablename;
+
+select * from user_tables;
+SELECT * FROM LOG_EJ_20240404;
+/
+create or replace procedure pro_create_table( p_user_id in varchar2, p_table_name out varchar2 )
+is
+    v_dbdate varchar2(10);
+    v_createtablesql VARCHAR2(100);
+    v_cursor INTEGER;
+begin
+    -- sysdate를 얻어옴
+    SELECT TO_CHAR(SYSDATE,'RRRRMMDD')
+    INTO v_dbdate
+    FROM dual;
+
+    -- table명 조합하기
+    p_table_name := 'LOG_'||p_user_id||'_'||v_dbdate;
+    
+    -- CREATE TABLE명령어 생성
+    v_createtablesql := 'CREATE TABLE ' || p_table_name || ' (c1 number, c2 varchar2(10))';
+    
+    --CREATE TABLE명령어 화면에 출력  
+    DBMS_OUTPUT.PUT_LINE(v_createtablesql);
+    
+    -- 테이블 생성
+    v_cursor := DBMS_SQL.OPEN_CURSOR;  
+    DBMS_SQL.PARSE(v_cursor, v_createtablesql, dbms_sql.v7);
+    DBMS_SQL.CLOSE_CURSOR(v_cursor);
+end;
+/
