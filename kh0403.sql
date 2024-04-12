@@ -400,3 +400,7 @@ end;
 /
 
 print var_calc;
+
+delete from board_reply;
+delete from board;
+commit;
