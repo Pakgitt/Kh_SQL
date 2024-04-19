@@ -84,8 +84,12 @@ select * from BOARD_REPLY ORDER BY BOARD_REPLY_REF, BOARD_REPLY_STEP;
 
 delete from board_reply where board_reply_id = 6;
 
-INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
-    'kh1', '댓글1' , default , null, 
+select * from board;
+select * from board_reply;
+desc board_reply;
+
+INSERT INTO BOARD_REPLY VA1LUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 3,
+    '세혁', '1103 댓글 내용' , default , null, 
     1 , (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 1   );
 -- 댓글 - 원본글
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
@@ -139,6 +143,8 @@ INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD
 INSERT INTO BOARD_REPLY VALUES ( (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 5,
     'kh1', '원ㄷ' , default , null, 
     1 , (SELECT NVL(MAX(BOARD_REPLY_ID),0)+1 FROM BOARD_REPLY), 1   );    
+
+desc board_reply;
 
 ---- 3 에 댓글
 UPDATE BOARD_REPLY SET BOARD_REPLY_STEP = BOARD_REPLY_STEP+1  WHERE 

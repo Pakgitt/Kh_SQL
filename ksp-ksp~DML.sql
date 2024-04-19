@@ -66,3 +66,11 @@ delete board_file;
 commit;
 
 select board_no, board_title, file_id, board_writer, board_write_time, hit from board_community left join board_file on b_no = board_no order by 1 desc;
+
+	      select t2.*    from (select t1.*, rownum as rn
+		    from (select board_no, board_title, file_id, board_writer, board_write_time, hit
+	    from board_community left join board_file on b_no = board_no
+			order by 1 desc) t1 ) t2 where rn between 1 and 5;
+
+desc board_file;
+
